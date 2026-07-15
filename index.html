@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的天賦地圖 | My Talent Map Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
+                        'hover-glow': '0 20px 40px -15px rgba(99, 102, 241, 0.08), 0 1px 10px rgba(99, 102, 241, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 科技白雅緻網格背景 */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(226, 232, 240, 0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.3) 1px, transparent 1px);
+        }
+        /* 漸層柔霧 */
+        .glow-sphere {
+            filter: blur(120px);
+            opacity: 0.45;
+        }
+        /* 平滑過渡 */
+        .transition-all-300 {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* 美化滾動條 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-[#fcfdfe] text-slate-800 font-sans antialiased bg-grid-pattern min-h-screen relative overflow-x-hidden">
+
+    <!-- 頂部裝飾柔霧 -->
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-100 glow-sphere pointer-events-none"></div>
+    <div class="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-violet-100 glow-sphere pointer-events-none"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[40vw] h-[40vw] rounded-full bg-slate-100 glow-sphere pointer-events-none"></div>
+
+    <!-- 導覽列 -->
+    <nav class="sticky top-0 z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-sm">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900">天賦地圖</h1>
+                    <p class="text-xs text-slate-500">Talent Map Dashboard</p>
+                </div>
+            </div>
+            
+            <!-- 導覽連結 (桌機版) -->
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
+                <a href="#manifesto" class="hover:text-indigo-600 transition-all-300">職涯宣言</a>
+                <a href="#core-talents" class="hover:text-indigo-600 transition-all-300">核心天賦</a>
+                <a href="#hedgehog-ikigai" class="hover:text-indigo-600 transition-all-300">刺蝟與 Ikigai</a>
+                <a href="#uvp-position" class="hover:text-indigo-600 transition-all-300">獨特價值</a>
+                <a href="#career-blueprint" class="hover:text-indigo-600 transition-all-300">發展藍圖</a>
+                <a href="#skills-cultivation" class="hover:text-indigo-600 transition-all-300">能力養成</a>
+            </div>
+
+            <!-- 時間問候與列印按鈕 -->
+            <div class="flex items-center space-x-4">
+                <span id="live-greeting" class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full font-medium hidden sm:inline-block">載入中...</span>
+                <button onclick="window.print()" class="text-xs bg-white border border-slate-200 hover:border-slate-300 shadow-sm text-slate-700 px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 transition-all-300">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm0-13V4a2 2 0 012-2h4a2 2 0 012 2v3m-6 0h6"></path>
+                    </svg>
+                    <span>列印/導出</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主區塊 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-16">
+
+        <!-- 1. Hero 區塊與職涯宣言 -->
+        <section id="manifesto" class="relative rounded-3xl bg-white/60 border border-white/80 p-8 sm:p-12 shadow-premium backdrop-blur-sm overflow-hidden transition-all-300 hover:shadow-hover-glow">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50/40 rounded-full filter blur-3xl pointer-events-none"></div>
+            
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wider">
+                        Personal Manifesto
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                        親愛的，這是一份屬於你的<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600">「天賦地圖」</span>
+                    </h2>
+                    <p class="text-base text-slate-600 leading-relaxed max-w-xl">
+                        這不是一份僵化的職業清單，而是一副指引你前行的羅盤。它記錄了你的核心天賦、刺蝟原則與長期藍圖，旨在幫助你理解自己、整合優勢，在未來的創作與人生路上，不疾不徐，發揮最大的影響力。
+                    </p>
+                    
+                    <!-- 快速數據概覽 -->
+                    <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="block text-2xl font-bold text-indigo-600">4 大</span>
+                            <span class="text-xs text-slate-500 font-medium">核心天賦</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-bold text-violet-600">1 個</span>
+                            <span class="text-xs text-slate-500 font-medium">核心定位</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-bold text-emerald-600">4 階段</span>
+                            <span class="text-xs text-slate-500 font-medium">職涯藍圖</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 職涯宣言展示牌 -->
+                <div class="lg:col-span-5 bg-gradient-to-b from-slate-50/80 to-white/90 border border-slate-100 rounded-2xl p-6 sm:p-8 shadow-sm relative">
+                    <div class="absolute -top-3 -left-3 w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-serif text-lg shadow-md">“</div>
+                    <h3 class="text-xs font-bold uppercase text-indigo-600 tracking-wider mb-3">我的職涯宣言</h3>
+                    <blockquote class="text-slate-800 font-medium text-base sm:text-lg leading-relaxed mb-4">
+                        「我的使命不是創作更多作品，而是透過音樂、文字與思考，將那些難以言喻的情緒與想法，轉化成能陪伴自己，也陪伴他人的作品。」
+                    </blockquote>
+                    <div class="border-t border-slate-100 pt-3 flex justify-between items-center">
+                        <span class="text-xs font-semibold text-slate-500">Core Value</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">理解 · 整合 · 表達</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2. 四大核心天賦 -->
+        <section id="core-talents" class="space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+                <div>
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">My Strengths</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">你的四大核心天賦 (Talent)</h2>
+                </div>
+                <p class="text-sm text-slate-500 max-w-md">這些是你不費吹灰之力就能展現的自然優勢，是支撐你所有產出的內在源泉。</p>
+            </div>
+
+            <!-- 天賦卡片網格 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- 天賦 1 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 sm:p-8 shadow-premium transition-all-300 hover:-translate-y-1 hover:shadow-hover-glow relative group">
+                    <div class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors duration-300">
+                        <span class="text-xs font-bold">01</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 text-indigo-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-slate-900">將抽象變成具體</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">這是你最突出的能力。最讓你快樂的不是機械式地完成一首歌，而是<strong>「把一個沒有形狀的想法，揉捏成一個完整的作品」</strong>。</p>
+                        
+                        <!-- 互動對比效果 -->
+                        <div class="bg-slate-50 rounded-xl p-4 text-xs space-y-2">
+                            <p class="font-semibold text-slate-700 mb-2">💡 整合轉換演示：</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="bg-white p-2.5 rounded-lg border border-slate-100 flex flex-col justify-between">
+                                    <span class="text-slate-400">抽象源頭</span>
+                                    <span class="font-medium text-slate-800 mt-1">情緒、一本書、人生經驗、世界觀</span>
+                                </div>
+                                <div class="bg-indigo-50/30 p-2.5 rounded-lg border border-indigo-100/50 flex flex-col justify-between">
+                                    <span class="text-indigo-600 font-medium">具體產出</span>
+                                    <span class="font-semibold text-indigo-900 mt-1">一首歌、概念、故事、一張 EP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 天賦 2 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 sm:p-8 shadow-premium transition-all-300 hover:-translate-y-1 hover:shadow-hover-glow relative group">
+                    <div class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors duration-300">
+                        <span class="text-xs font-bold">02</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 text-violet-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-slate-900">深度思考與整合</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">你的自然工作流程是沉穩、踏實的。比起快節奏的、複製品式的追逐流量，你更適合做<strong>「有深度與觀點的創作」</strong>。</p>
+                        
+                        <!-- 流程圖 -->
+                        <div class="flex items-center justify-between bg-slate-50 rounded-xl p-4 text-xs">
+                            <div class="text-center flex-1">
+                                <span class="bg-violet-100 text-violet-800 px-2 py-1 rounded font-medium">吸收</span>
+                            </div>
+                            <span class="text-slate-300">→</span>
+                            <div class="text-center flex-1">
+                                <span class="bg-violet-100 text-violet-800 px-2 py-1 rounded font-medium">思考</span>
+                            </div>
+                            <span class="text-slate-300">→</span>
+                            <div class="text-center flex-1">
+                                <span class="bg-violet-100 text-violet-800 px-2 py-1 rounded font-medium">整理</span>
+                            </div>
+                            <span class="text-slate-300">→</span>
+                            <div class="text-center flex-1">
+                                <span class="bg-indigo-600 text-white px-2 py-1 rounded font-medium">創造</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-rose-500 italic flex items-center">
+                            <svg class="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                            拒絕簡單的： 模仿 → 生產 → 發布
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 天賦 3 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 sm:p-8 shadow-premium transition-all-300 hover:-translate-y-1 hover:shadow-hover-glow relative group">
+                    <div class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-pink-50 group-hover:text-pink-600 transition-colors duration-300">
+                        <span class="text-xs font-bold">03</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 text-pink-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-slate-900">真誠的表達</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">你曾說：「創作可以提醒自己，知道自己是誰。」你的創作動機來自內在的<strong>自我探索</strong>，而不是迎合市場。這讓你的作品帶有高純度的一致價值與靈魂。</p>
+                        
+                        <!-- 心得展示 -->
+                        <div class="bg-pink-50/40 border border-pink-100 rounded-xl p-4 text-xs text-pink-900 italic">
+                            「不迎合大眾，反而能吸引到靈魂相契合的聽眾。你的真誠是你最好的個人品牌標籤。」
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 天賦 4 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 sm:p-8 shadow-premium transition-all-300 hover:-translate-y-1 hover:shadow-hover-glow relative group">
+                    <div class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300">
+                        <span class="text-xs font-bold">04</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 text-emerald-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-slate-900">傾聽與理解他人</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">他人渴望向你傾訴。這並非因為你總是給予廉價的安慰，而是因為你<strong>不急著評判、能真正理解，且能給予深刻有價值的觀點</strong>。</p>
+                        
+                        <!-- 適用場景標籤 -->
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">✨ 音樂創作</span>
+                            <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">🏫 教育教學</span>
+                            <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">🤝 顧問諮詢</span>
+                            <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">💬 社群經營</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 3. 刺蝟原則與 Ikigai 交互探索區 -->
+        <section id="hedgehog-ikigai" class="relative rounded-3xl bg-slate-50/50 border border-slate-100 p-8 sm:p-12 shadow-premium">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                
+                <!-- 左側：Ikigai 核心理念 & 交互刺蝟環 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Self-Discovery</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">刺蝟原則與 Ikigai</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        刺蝟原則（Hedgehog Concept）是尋找熱情、天賦與商業價值的交集。請在右方點擊各個維度，探索你獨特的交匯點。
+                    </p>
+
+                    <!-- Ikigai 金句展示 -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-indigo-50 rounded-full opacity-50"></div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest block mb-2">My Ikigai</span>
+                        <p class="text-slate-800 font-medium leading-relaxed">
+                            「透過音樂、文字與創作，將思考與人生體悟轉化成能陪伴他人的作品。」
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 右側：互動探索區 -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
+                    <!-- 交互 Tab 切換鈕 -->
+                    <div class="flex flex-wrap p-1 bg-slate-100 rounded-xl gap-1">
+                        <button onclick="switchHedgehog('love')" id="btn-hh-love" class="hh-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-semibold rounded-lg text-center transition-all-300 bg-white text-slate-900 shadow-sm">
+                            ❤️ 你熱愛的是什麼
+                        </button>
+                        <button onclick="switchHedgehog('potential')" id="btn-hh-potential" class="hh-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-semibold rounded-lg text-center transition-all-300 text-slate-600 hover:text-slate-900">
+                            🌟 潛力極高的領域
+                        </button>
+                        <button onclick="switchHedgehog('market')" id="btn-hh-market" class="hh-tab-btn flex-1 py-2.5 text-xs sm:text-sm font-semibold rounded-lg text-center transition-all-300 text-slate-600 hover:text-slate-900">
+                            💰 市場付費交集
+                        </button>
+                    </div>
+
+                    <!-- 內容展示板 -->
+                    <div class="min-h-[220px] flex flex-col justify-between">
+                        <!-- 熱愛內容 -->
+                        <div id="hh-content-love" class="hh-content-pane space-y-4">
+                            <h3 class="text-slate-900 font-bold text-base flex items-center">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 mr-2"></span>
+                                你深感熱情的事物
+                            </h3>
+                            <p class="text-sm text-slate-500">這些事對你而言，即使沒有回報，你依然會甘之如飴地投入：</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs font-semibold text-slate-700 flex items-center space-x-2">
+                                    <span class="text-rose-500">📖</span> <span>閱讀與深度思考</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs font-semibold text-slate-700 flex items-center space-x-2">
+                                    <span class="text-rose-500">🎵</span> <span>音樂與內容創作</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs font-semibold text-slate-700 flex items-center space-x-2">
+                                    <span class="text-rose-500">💡</span> <span>將思考轉化為作品</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs font-semibold text-slate-700 flex items-center space-x-2">
+                                    <span class="text-rose-500">🌍</span> <span>理解自己與世界</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 潛力內容 -->
+                        <div id="hh-content-potential" class="hh-content-pane space-y-4 hidden">
+                            <h3 class="text-slate-900 font-bold text-base flex items-center">
+                                <span class="w-2.5 h-2.5 rounded-full bg-violet-500 mr-2"></span>
+                                你最有潛力做到極致的事
+                            </h3>
+                            <p class="text-sm text-slate-500">你在這些維度上，擁有極佳的直覺、領悟力與深度延展可能：</p>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                <div class="border border-slate-100 p-2.5 rounded-lg text-xs text-slate-700 font-medium">🎹 詞曲創作</div>
+                                <div class="border border-slate-100 p-2.5 rounded-lg text-xs text-slate-700 font-medium">🎨 音樂企劃與概念設計</div>
+                                <div class="border border-slate-100 p-2.5 rounded-lg text-xs text-slate-700 font-medium">🤖 AI 音樂科技應用</div>
+                                <div class="border border-slate-100 p-2.5 rounded-lg text-xs text-slate-700 font-medium">⚖️ 音樂版權專業知識</div>
+                                <div class="border border-slate-100 p-2.5 rounded-lg text-xs text-slate-700 font-medium font-semibold text-indigo-600 bg-indigo-50/20 col-span-2">🧠 複雜知識的極簡轉化</div>
+                            </div>
+                        </div>
+
+                        <!-- 市場付費內容 -->
+                        <div id="hh-content-market" class="hh-content-pane space-y-4 hidden">
+                            <h3 class="text-slate-900 font-bold text-base flex items-center">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2"></span>
+                                市場最願意為你買單的範疇
+                            </h3>
+                            <p class="text-sm text-slate-500">你的專業交集非常明確，以下都是極具含金量且能實現永續獲利的模式：</p>
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <div class="bg-emerald-50/30 p-2.5 rounded-lg text-emerald-800 font-semibold border border-emerald-100 flex items-center justify-between">
+                                    <span>🎤 音樂製作與版權</span>
+                                    <span class="text-[10px] text-emerald-500">★ 高商業價值</span>
+                                </div>
+                                <div class="bg-emerald-50/30 p-2.5 rounded-lg text-emerald-800 font-semibold border border-emerald-100 flex items-center justify-between">
+                                    <span>🤖 AI 音樂應用工具</span>
+                                    <span class="text-[10px] text-emerald-500">★ 前瞻優勢</span>
+                                </div>
+                                <div class="bg-emerald-50/30 p-2.5 rounded-lg text-emerald-800 font-semibold border border-emerald-100 flex items-center justify-between">
+                                    <span>🎓 創作教育與工作坊</span>
+                                    <span class="text-[10px] text-emerald-500">★ 知識變現</span>
+                                </div>
+                                <div class="bg-emerald-50/30 p-2.5 rounded-lg text-emerald-800 font-semibold border border-emerald-100 flex items-center justify-between">
+                                    <span>🧠 顧問服務與個人品牌</span>
+                                    <span class="text-[10px] text-emerald-500">★ 高溢價</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 4. 獨特價值主張與職涯定位 -->
+        <section id="uvp-position" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- 獨特價值 (UVP) 卡片 -->
+            <div class="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-premium">
+                <div class="absolute right-0 bottom-0 w-80 h-80 bg-indigo-500/10 rounded-full filter blur-3xl pointer-events-none"></div>
+                <span class="text-xs font-bold text-indigo-300 uppercase tracking-widest block mb-4">Unique Value Proposition</span>
+                <h3 class="text-xl sm:text-2xl font-bold mb-6 leading-tight">
+                    你不只是單一維度的專家，<br>
+                    而是獨特跨界能力的交匯者。
+                </h3>
+
+                <!-- 對比卡片 -->
+                <div class="space-y-4">
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <span class="text-[11px] text-slate-400 block mb-1">一般人眼中的單一角色：</span>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="bg-white/10 px-2 py-1 rounded text-slate-300">只有音樂人</span>
+                            <span class="bg-white/10 px-2 py-1 rounded text-slate-300">只有創作者</span>
+                            <span class="bg-white/10 px-2 py-1 rounded text-slate-300">只有版權專家</span>
+                            <span class="bg-white/10 px-2 py-1 rounded text-slate-300">只有 AI 使用者</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-indigo-500/10 border border-indigo-400/30 rounded-xl p-5 relative">
+                        <span class="text-[11px] text-indigo-300 block mb-1 font-semibold">你所蘊含的獨特價值（UVP）：</span>
+                        <p class="text-sm font-semibold text-white leading-relaxed">
+                            「能結合音樂、AI、創作與深度思考，將抽象概念轉化成有溫度、有觀點作品的人。」
+                        </p>
+                        <p class="text-xs text-indigo-200 mt-2">這種跨領域整合能力，就是你不可替代的「差異化護城河」。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最適合你的職涯定位 -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-premium flex flex-col justify-between relative group hover:shadow-hover-glow transition-all-300">
+                <div class="space-y-6">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest block">Core Positioning</span>
+                    <h3 class="text-xl font-bold text-slate-900">最合適你的職涯定位</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        與其被單一職稱綁架，不如定位為一個跨域整合的核心探索者。這個定位能完美兼容你未來在寫作、教學、音樂與顧問的多角化發展。
+                    </p>
+
+                    <div class="space-y-3 pt-2">
+                        <div class="p-4 bg-slate-50 border-l-4 border-indigo-500 rounded-r-xl">
+                            <span class="text-[11px] font-bold uppercase text-indigo-600 tracking-wider">精煉版定位</span>
+                            <p class="text-base font-bold text-slate-800 mt-1">「以音樂為核心，結合 AI、閱讀與思考的創作者。」</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-l-4 border-violet-500 rounded-r-xl">
+                            <span class="text-[11px] font-bold uppercase text-violet-600 tracking-wider">完整版定位</span>
+                            <p class="text-sm font-bold text-slate-800 mt-1">「用音樂、文字與 AI 探索自我與世界的創作者。」</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <span class="text-[11px] text-slate-400 block mt-6 border-t border-slate-100 pt-3">這個框架將確保你既保有創作的純粹度，又具備知識傳遞的厚度。</span>
+            </div>
+
+        </section>
+
+
+        <!-- 5. 職涯發展藍圖 (1 - 5年) -->
+        <section id="career-blueprint" class="space-y-8">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Growth Timeline</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">職涯發展藍圖（5年計畫）</h2>
+                <p class="text-sm text-slate-500">一步一腳印，從個人產出到建立個人方法論，進而賦能他人。</p>
+            </div>
+
+            <!-- 橫向/縱向互動步驟切換器 -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-6 sm:p-10 shadow-premium">
+                <!-- 步驟控制鈕 -->
+                <div class="grid grid-cols-4 gap-2 mb-8 border-b border-slate-100 pb-6">
+                    <button onclick="switchStage(1)" id="stage-btn-1" class="stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 border border-indigo-100 bg-indigo-50/50 text-indigo-900 shadow-sm">
+                        <span class="text-xs font-bold text-indigo-600 mb-1">第一階段</span>
+                        <span class="text-xs sm:text-sm font-semibold">現在 ~ 1年</span>
+                    </button>
+                    <button onclick="switchStage(2)" id="stage-btn-2" class="stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 text-slate-500 hover:bg-slate-50">
+                        <span class="text-xs text-slate-400 mb-1">第二階段</span>
+                        <span class="text-xs sm:text-sm font-semibold">1 ~ 3年</span>
+                    </button>
+                    <button onclick="switchStage(3)" id="stage-btn-3" class="stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 text-slate-500 hover:bg-slate-50">
+                        <span class="text-xs text-slate-400 mb-1">第三階段</span>
+                        <span class="text-xs sm:text-sm font-semibold">3 ~ 5年</span>
+                    </button>
+                    <button onclick="switchStage(4)" id="stage-btn-4" class="stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 text-slate-500 hover:bg-slate-50">
+                        <span class="text-xs text-slate-400 mb-1">第四階段</span>
+                        <span class="text-xs sm:text-sm font-semibold">5年以上</span>
+                    </button>
+                </div>
+
+                <!-- 階段內容展示區 -->
+                <div id="stage-content-box" class="transition-all duration-300 min-h-[300px]">
+                    <!-- 動態載入，此處為預設 第一階段 結構 -->
+                    <div id="stage-pane-1" class="stage-content-pane space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                            <div>
+                                <span class="text-xs bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold">Phase 01 · 建立作品與定位</span>
+                                <h3 class="text-xl font-bold text-slate-900 mt-2">打磨作品集，構築最初的個人品牌</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block">階段核心任務：</span>
+                                <span class="text-sm font-bold text-slate-800">完成並發表單曲或 EP</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50">
+                            <!-- 關鍵行動 -->
+                            <div class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600">關鍵行動方針</h4>
+                                <ul class="space-y-3 text-sm text-slate-600">
+                                    <li class="flex items-start">
+                                        <span class="text-indigo-500 mr-2">✓</span>
+                                        <span>完成並發表你手頭上的 EP 或單曲，落實「將抽象化為具體」的最高能力。</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-indigo-500 mr-2">✓</span>
+                                        <span>高頻次、常態性地分享你的創作理念、閱讀心得、AI 工具的探索經驗。</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-indigo-500 mr-2">✓</span>
+                                        <span>確立個人視覺與文字對外的整體調性，保持一致的品牌辨識度。</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- 關鍵成果與里程碑 -->
+                            <div class="bg-indigo-50/10 p-6 rounded-2xl border border-indigo-100/30 space-y-4">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-700">關鍵成果 Key Results</h4>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                        <span class="text-xs font-medium text-slate-700">穩定產出作品與思想內容</span>
+                                        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md font-bold">核心指標</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                        <span class="text-xs font-medium text-slate-700">建立完整的個人作品集檔案</span>
+                                        <span class="text-[10px] bg-indigo-50/80 text-indigo-700 px-2.5 py-1 rounded-md font-bold">品牌基石</span>
+                                    </div>
+                                    <!-- 互動打勾與挑戰 -->
+                                    <div class="pt-2">
+                                        <label class="flex items-center space-x-2 cursor-pointer bg-white/50 p-2.5 rounded-lg border border-dashed border-slate-200">
+                                            <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                            <span class="text-xs text-slate-600">我已啟動本階段的第一個行動！</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 6. 核心能力養成與自評 -->
+        <section id="skills-cultivation" class="space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+                <div>
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Skills & Focus</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">最需要持續培養的核心能力</h2>
+                </div>
+                <p class="text-sm text-slate-500 max-w-md">除了音樂之外，這三項能力將成為你天賦的「槓桿放大器」，讓作品傳遞更高價值。</p>
+            </div>
+
+            <!-- 能力卡片 & 互動自評 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- 能力 1: 寫作能力 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-premium hover:shadow-hover-glow transition-all-300 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">寫作能力 (Writing)</h3>
+                        <p class="text-sm text-slate-500">將深刻、抽象的思考與創作理念，具象為清晰的文字。這可以讓你的受眾在不聽歌時，也能深刻被你的智慧與價值所打動。</p>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4 mt-6 space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-500">當前狀態評估</span>
+                            <span class="font-bold text-indigo-600" id="skill-val-1">50%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" oninput="updateSkill(1, this.value)" class="w-full accent-indigo-600 cursor-pointer h-1 bg-slate-100 rounded-lg appearance-none">
+                        <p class="text-[11px] text-slate-400 italic" id="skill-tip-1">不斷記錄日常閱讀筆記與思考片段，是起步的好方法。</p>
+                    </div>
+                </div>
+
+                <!-- 能力 2: 敘事能力 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-premium hover:shadow-hover-glow transition-all-300 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-xl bg-violet-50 flex items-center justify-center text-violet-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">敘事能力 (Storytelling)</h3>
+                        <p class="text-sm text-slate-500">擁有把分散的歌曲、閱讀感受與人生經驗，串聯成富有強大感染力故事的能力，這是打動人心的關鍵。</p>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4 mt-6 space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-500">當前狀態評估</span>
+                            <span class="font-bold text-violet-600" id="skill-val-2">50%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" oninput="updateSkill(2, this.value)" class="w-full accent-violet-600 cursor-pointer h-1 bg-slate-100 rounded-lg appearance-none">
+                        <p class="text-[11px] text-slate-400 italic" id="skill-tip-2">用一個簡單的「起承轉合」框架，試著包裝你的下一首新歌背景。</p>
+                    </div>
+                </div>
+
+                <!-- 能力 3: 個人品牌經營 -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-premium hover:shadow-hover-glow transition-all-300 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">個人品牌經營</h3>
+                        <p class="text-sm text-slate-500">打造合適的行銷管道與觸及聽眾的方式。這能讓人們不只是記住你某首好聽的歌，更記住你這個人、你的核心價值與生活哲學。</p>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4 mt-6 space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-500">當前狀態評估</span>
+                            <span class="font-bold text-pink-600" id="skill-val-3">50%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" oninput="updateSkill(3, this.value)" class="w-full accent-pink-600 cursor-pointer h-1 bg-slate-100 rounded-lg appearance-none">
+                        <p class="text-[11px] text-slate-400 italic" id="skill-tip-3">挑選一個最合適你的發布媒介（例如電子報或社群），並保持定時更新。</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 7. 啟航沙盒（在線筆記本與願景板） -->
+        <section id="reflection-sandbox" class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-premium">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- 沙盒說明與思考提示 -->
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest block">Interactive Sandbox</span>
+                    <h2 class="text-2xl font-bold text-slate-900">啟航沙盒與反思板</h2>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        當下你對你的天賦地圖有什麼新的想法或打算開展的計畫？在這裡記下來，這些內容將保存在你的瀏覽器中，伴隨你隨時回來複習。
+                    </p>
+
+                    <!-- 自我提問引導 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <p class="text-xs font-semibold text-slate-700">✍️ 自我反思提示問題：</p>
+                        <ul class="text-xs text-slate-500 space-y-1 list-disc list-inside">
+                            <li>我當前最想開始實踐的「抽象概念」是什麼？</li>
+                            <li>我要如何在下一期分享中融合我的深度思考？</li>
+                            <li>寫下未來 3 個月內，可以精進的一項小技能。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 編輯器與儲存模組 -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-600">我的今日啟迪與計畫事項：</label>
+                        <textarea id="reflection-input" rows="5" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:bg-white rounded-xl p-4 text-sm outline-none transition-all-300" placeholder="在此輸入你的感悟或明日行動..."></textarea>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span id="save-status" class="text-xs text-emerald-600 font-medium opacity-0 transition-opacity duration-300">✓ 已成功儲存至本地瀏覽器！</span>
+                        <button onclick="saveReflection()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2 px-5 rounded-lg shadow-sm transition-all-300">
+                            保存當前感悟
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-50 border-t border-slate-200/60 mt-16 py-8 px-6 text-center text-xs text-slate-400 space-y-2">
+        <p class="font-medium text-slate-500">我的天賦地圖數位儀表板 © 2026. 屬於你自己的北極星標桿。</p>
+        <p>「生活與創作，都是漫長的旅程。願這幅天賦地圖，能在你迷茫時，隨時為你亮起溫暖的光。」</p>
+    </footer>
+
+    <!-- JavaScript 互動功能 -->
+    <script>
+        // 1. 初始化問候與時間
+        window.onload = function() {
+            const hr = new Date().getHours();
+            let greeting = "你好";
+            if (hr < 12) greeting = "🌅 早上好，祝你擁有充沛的創作熱情！";
+            else if (hr < 18) greeting = "☕ 下午好，今天有進行深度思考嗎？";
+            else greeting = "🌙 晚上好，沉澱心靈，享受創作時刻。";
+            
+            document.getElementById("live-greeting").innerText = greeting;
+
+            // 讀取本地沙盒資料
+            const savedNote = localStorage.getItem("talent_map_reflection");
+            if (savedNote) {
+                document.getElementById("reflection-input").value = savedNote;
+            }
+        };
+
+        // 2. 刺蝟原則 Tab 切換
+        function switchHedgehog(tab) {
+            // 所有內容先隱藏
+            document.querySelectorAll(".hh-content-pane").forEach(pane => {
+                pane.classList.add("hidden");
+            });
+            // 所有按鈕樣式還原
+            document.querySelectorAll(".hh-tab-btn").forEach(btn => {
+                btn.classList.remove("bg-white", "text-slate-900", "shadow-sm");
+                btn.classList.add("text-slate-600", "hover:text-slate-900");
+            });
+
+            // 啟用對應 Tab 內容
+            document.getElementById(`hh-content-${tab}`).classList.remove("hidden");
+            
+            // 啟用按鈕樣式
+            const activeBtn = document.getElementById(`btn-hh-${tab}`);
+            activeBtn.classList.remove("text-slate-600", "hover:text-slate-900");
+            activeBtn.classList.add("bg-white", "text-slate-900", "shadow-sm");
+        }
+
+        // 3. 職涯藍圖階段內容矩陣
+        const stageData = {
+            1: {
+                phase: "Phase 01 · 建立作品與定位",
+                title: "打磨作品集，構築最初的個人品牌",
+                mission: "完成並發表單曲或 EP",
+                actions: [
+                    "完成並發表你手頭上的 EP 或單曲，落實「將抽象化為具體」的最高能力。",
+                    "高頻次、常態性地分享你的創作理念、閱讀心得、AI 工具的探索經驗。",
+                    "確立個人視覺與文字對外的整體調性，保持一致的品牌辨識度。"
+                ],
+                krs: [
+                    { label: "穩定產出作品與思想內容", tag: "核心指標" },
+                    { label: "建立完整的個人作品集檔案", tag: "品牌基石" }
+                ],
+                checklist: "我已啟動本階段的第一個行動！"
+            },
+            2: {
+                phase: "Phase 02 · 建立影響力",
+                title: "拓展傳播媒介，建構高黏性受眾社群",
+                mission: "多元內容平台協作，累積忠實聽眾與讀者",
+                actions: [
+                    "規劃並推出你的專屬內容媒介（如 YouTube、專業電子報或 Podcast 節目）。",
+                    "將創作過程、底層邏輯與音樂產業、版權知識大膽分享出去，建立專業可信度。",
+                    "主動與同行創作者及核心聽眾互動，累積真正懂你的前 1000 位鐵粉。"
+                ],
+                krs: [
+                    { label: "完成平台初期受眾規模增長", tag: "影響力" },
+                    { label: "多元化收益來源（版稅、諮詢、工作坊、合作）", tag: "商業閉環" }
+                ],
+                checklist: "我正在建立或規劃我的內容平台（如電子報、YT）！"
+            },
+            3: {
+                phase: "Phase 03 · 建立自己的方法論",
+                title: "提煉過往經驗，將實踐體悟系統化輸出",
+                mission: "知識服務整合與賦能其他創作者",
+                actions: [
+                    "將你多年來積累的經驗提煉為一套具備可複製性的「方法論學程」。",
+                    "開發具備自身風格的「AI 與音樂創作流程」、「概念至成品」的專題教學課程。",
+                    "針對音樂產業、版權實務，為更多創作者提供落地性極高的顧問輔導服務。"
+                ],
+                krs: [
+                    { label: "推出首門個人系統化線上課程或工作坊", tag: "核心方法論" },
+                    { label: "建立成熟的顧問預約體系", tag: "溢價變現" }
+                ],
+                checklist: "我已經開始記錄或整理我的創作 SOP！"
+            },
+            4: {
+                phase: "Phase 04 · 建立代表作與長期品牌",
+                title: "淬鍊具備時代印記的代表作，實現終身價值",
+                mission: "成為兼具藝術高度與知識傳播力的意見領袖",
+                actions: [
+                    "持續且專注地創作具有深度生命厚度的音樂作品，不追逐流量，打造具備極高留存度的經典。",
+                    "全面鞏固個人品牌在行業內的信任深度，建立長期且穩健的合作關係。",
+                    "讓自己成為「藝術創作」與「知識變現」相結合的代表性典範，終身前行。"
+                ],
+                krs: [
+                    { label: "產出具代表性、陪伴人心且影響深遠的作品", tag: "藝術高度" },
+                    { label: "個人品牌建立無可取代的行業信任感", tag: "個人資產" }
+                ],
+                checklist: "我已將我的願景與代表作深深烙印在心中！"
+            }
+        };
+
+        function switchStage(stageNum) {
+            // 所有按鈕還原
+            document.querySelectorAll(".stage-tab-btn").forEach(btn => {
+                btn.className = "stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 text-slate-500 hover:bg-slate-50";
+                // 重設內部文字顏色
+                const label = btn.querySelector("span:first-child");
+                if (label) {
+                    label.className = "text-xs text-slate-400 mb-1";
+                }
+            });
+
+            // 啟用當前按鈕
+            const activeBtn = document.getElementById(`stage-btn-${stageNum}`);
+            activeBtn.className = "stage-tab-btn flex flex-col items-center py-3 rounded-xl transition-all-300 border border-indigo-100 bg-indigo-50/50 text-indigo-900 shadow-sm";
+            const activeLabel = activeBtn.querySelector("span:first-child");
+            if (activeLabel) {
+                activeLabel.className = "text-xs text-indigo-600 mb-1 font-bold";
+            }
+
+            // 動態切換內容，帶有流暢的透明度淡入
+            const container = document.getElementById("stage-content-box");
+            container.style.opacity = 0;
+
+            setTimeout(() => {
+                const data = stageData[stageNum];
+                
+                let actionsHTML = "";
+                data.actions.forEach(action => {
+                    actionsHTML += `
+                        <li class="flex items-start">
+                            <span class="text-indigo-500 mr-2">✓</span>
+                            <span>${action}</span>
+                        </li>
+                    `;
+                });
+
+                let krsHTML = "";
+                data.krs.forEach(kr => {
+                    krsHTML += `
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <span class="text-xs font-medium text-slate-700">${kr.label}</span>
+                            <span class="text-[10px] bg-indigo-50/80 text-indigo-700 px-2.5 py-1 rounded-md font-bold">${kr.tag}</span>
+                        </div>
+                    `;
+                });
+
+                const htmlContent = `
+                    <div id="stage-pane-${stageNum}" class="stage-content-pane space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                            <div>
+                                <span class="text-xs bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold">${data.phase}</span>
+                                <h3 class="text-xl font-bold text-slate-900 mt-2">${data.title}</h3>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block">階段核心任務：</span>
+                                <span class="text-sm font-bold text-slate-800">${data.mission}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50">
+                            <!-- 關鍵行動 -->
+                            <div class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600">關鍵行動方針</h4>
+                                <ul class="space-y-3 text-sm text-slate-600">
+                                    ${actionsHTML}
+                                </ul>
+                            </div>
+
+                            <!-- 關鍵成果與里程碑 -->
+                            <div class="bg-indigo-50/10 p-6 rounded-2xl border border-indigo-100/30 space-y-4">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-700">關鍵成果 Key Results</h4>
+                                <div class="space-y-4">
+                                    ${krsHTML}
+                                    <!-- 互動打勾與挑戰 -->
+                                    <div class="pt-2">
+                                        <label class="flex items-center space-x-2 cursor-pointer bg-white/50 p-2.5 rounded-lg border border-dashed border-slate-200">
+                                            <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                            <span class="text-xs text-slate-600">${data.checklist}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML = htmlContent;
+                container.style.opacity = 1;
+            }, 150);
+        }
+
+        // 4. 核心能力評估動態反饋
+        const skillTips = {
+            1: [
+                { limit: 30, text: "剛起步，可以先嘗試每天在小筆記本上記錄一段不超過 100 字的靈感或讀書感想。" },
+                { limit: 70, text: "良好的寫作基礎！可嘗試把長篇文章縮寫成利於傳播的社群貼文，或寫新歌概念解析。" },
+                { limit: 100, text: "太棒了！你的文字本身就具有很高的獨立價值，非常適合經營深入探討的電子報。" }
+            ],
+            2: [
+                { limit: 30, text: "先學會講好一個日常生活小片段，練習把複雜的事情講給毫無基礎的人聽。" },
+                { limit: 70, text: "你的故事很有結構性！試著把你的每一首新歌、每一段生活感觸，包裝成帶有起承轉合的感人文章。" },
+                { limit: 100, text: "頂級敘事大師！你的故事能引起極佳的情感共鳴，可以用在 YouTube 腳本、甚至是出版物上。" }
+            ],
+            3: [
+                { limit: 30, text: "不要有壓力，在最合適你的發布平台（如個人社群）嘗試每週定時更新一次有價值的觀點。" },
+                { limit: 70, text: "品牌調性十分統一。建議固定分享你的 AI 創作實驗與版權知識，建立極高的專業形象。" },
+                { limit: 100, text: "恭喜！聽眾不只記住了你的音樂，也深深認可了你的個人哲學，你已經是一位具備知識溢價的代表性品牌了！" }
+            ]
+        };
+
+        function updateSkill(skillId, val) {
+            // 更新進度顯示
+            const elementId = `skill-val-${skillId}`;
+            document.getElementById(elementId).innerText = val + "%";
+
+            // 計算動態小建議
+            const tips = skillTips[skillId];
+            let targetText = "";
+            for (let i = 0; i < tips.length; i++) {
+                if (val <= tips[i].limit) {
+                    targetText = tips[i].text;
+                    break;
+                }
+            }
+            document.getElementById(`skill-tip-${skillId}`).innerText = targetText;
+        }
+
+        // 5. 儲存沙盒感悟
+        function saveReflection() {
+            const val = document.getElementById("reflection-input").value;
+            localStorage.setItem("talent_map_reflection", val);
+            
+            const status = document.getElementById("save-status");
+            status.style.opacity = 1;
+            setTimeout(() => {
+                status.style.opacity = 0;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
