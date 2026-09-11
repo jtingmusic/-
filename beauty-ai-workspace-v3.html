@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BEAUTY AI｜美業智慧工作台</title>
+  <style>
+    :root{
+      --bg:#f7f2ec; --panel:#fffdf9; --ink:#221f1d; --muted:#766d68; --line:#e7ddd5;
+      --rose:#c98890; --rose-soft:#f5e6e7; --charcoal:#2c2928; --green:#eef3ec;
+      --shadow:0 18px 48px rgba(55,40,34,.08); --radius:22px;
+    }
+    *{box-sizing:border-box;scroll-behavior:smooth}
+    body{margin:0;font-family:"PingFang TC","Noto Sans TC","Helvetica Neue",Arial,sans-serif;background:radial-gradient(circle at 90% 0%,rgba(201,136,144,.15),transparent 32%),var(--bg);color:var(--ink)}
+    button,input,textarea{font:inherit} button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}
+    aside{position:sticky;top:0;height:100vh;padding:28px 20px;border-right:1px solid var(--line);background:rgba(255,253,249,.93);backdrop-filter:blur(14px);z-index:20}
+    .brand{margin-bottom:34px}.brand .kicker{font-size:12px;letter-spacing:.18em;color:var(--rose);font-weight:800}.brand h1{font-size:24px;margin:7px 0 4px;letter-spacing:-.03em}.brand p{margin:0;color:var(--muted);font-size:13px}
+    nav{display:grid;gap:8px}.navitem{padding:11px 12px;border-radius:12px;color:#524b47;font-size:14px;display:flex;gap:10px;align-items:center;text-decoration:none;transition:.2s}.navitem.active{background:var(--charcoal);color:#fff}.navitem:hover{background:#efe7e2;color:var(--ink)}
+    main{padding:34px 36px 64px;max-width:1500px;width:100%}.section-anchor{scroll-margin-top:24px}
+    .hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin-bottom:28px}.eyebrow{font-size:13px;color:var(--rose);font-weight:800;letter-spacing:.14em}.hero h2{font-size:40px;line-height:1.08;margin:8px 0 10px;letter-spacing:-.045em}.hero p{color:var(--muted);margin:0;max-width:760px;line-height:1.7}
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:#625b57}
+    .grid{display:grid;gap:20px}.grid.two{grid-template-columns:1.1fr .9fr}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}.card h3{margin:0 0 8px;font-size:21px}.card .sub{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:18px}
+    .section-title{margin:34px 0 14px}.section-title h3{font-size:26px;margin:0 0 6px}.section-title p{margin:0;color:var(--muted)}
+    label{font-size:13px;font-weight:700;display:block;margin:0 0 8px}.choice-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}.choice{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:12px;color:#504844;font-size:13px}.choice.selected{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}
+    input,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px 13px;background:#fff;color:var(--ink);margin-bottom:16px;outline:none}textarea{min-height:96px;resize:vertical}input:focus,textarea:focus{border-color:#caa4a8;box-shadow:0 0 0 3px rgba(201,136,144,.12)}
+    .music-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.music-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;transition:.2s;text-align:left}.music-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(45,32,26,.08)}.music-card.selected{border-color:#2d2927;background:#2d2927;color:#fff}.music-card b{display:block;font-size:14px;margin-bottom:4px}.music-card span{font-size:12px;color:#857b75}.music-card.selected span{color:#d9d2ce}.optional{font-size:11px;color:var(--rose);font-weight:800;margin-left:6px}
+    .primary{width:100%;border:0;border-radius:14px;background:var(--charcoal);color:#fff;padding:14px 18px;font-weight:800;box-shadow:0 12px 24px rgba(34,31,29,.18)}.primary:hover{background:#443e3a}
+    .profile{display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:stretch}.portrait{min-height:340px;border-radius:18px;overflow:hidden;position:relative;background:#ddd}.portrait img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.86) contrast(.96)}.portrait:after{content:"AI LOOK";position:absolute;left:18px;bottom:16px;color:#fff;font-size:11px;letter-spacing:.18em;font-weight:800;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.meta span{padding:6px 9px;background:var(--rose-soft);color:#8d555d;border-radius:999px;font-size:11px;font-weight:800}.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.mini{border-top:1px solid var(--line);padding-top:12px}.mini b{display:block;font-size:11px;letter-spacing:.1em;color:var(--rose);margin-bottom:5px}.mini p{margin:0;font-size:14px;line-height:1.55}.note{margin-top:16px;border-left:3px solid var(--rose);background:#fbf3f3;padding:13px 14px;border-radius:10px;color:#5d5350;font-size:13px;line-height:1.6}
+    .outputs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.output-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;display:flex;flex-direction:column;min-height:280px}.output-card b{display:block;margin-bottom:6px;font-size:14px}.output-card p{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 12px;white-space:pre-line}.output-card .spacer{flex:1}.ghost{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-weight:700;font-size:12px}.version{font-size:10px;color:#9d918b;margin-bottom:8px}.line-box{background:#f5f7f2;border-radius:12px;padding:10px;margin-bottom:10px}.line-q{font-size:12px;font-weight:700;margin-bottom:5px}.line-a{font-size:12px;color:#5f675a;line-height:1.5}
+    .customer-list{display:grid;gap:10px}.customer{display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;align-items:center}.customer b{font-size:14px}.customer p{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.5}.customer-actions{display:flex;gap:8px;align-items:center}.status{font-size:11px;padding:5px 8px;border-radius:999px;background:var(--green);color:#55704f;height:max-content}.view-btn{border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:10px;font-size:12px;font-weight:700}
+    .charts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.chart{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}.chart h4{margin:0 0 14px;font-size:14px}.barrow{display:grid;grid-template-columns:92px 1fr 38px;gap:8px;align-items:center;margin:10px 0;font-size:12px}.barbg{height:9px;background:#eee6e1;border-radius:999px;overflow:hidden}.barfill{height:100%;background:linear-gradient(90deg,#d6a0a5,#8b6a70);border-radius:999px}.insight{margin-top:16px;padding:14px 16px;background:#2d2927;color:#fff;border-radius:14px;font-size:13px;line-height:1.65}.demo{font-size:11px;color:#9a908a;margin-top:8px}.footer{margin-top:34px;color:#9a908a;font-size:12px;text-align:center}
+    .drawer-overlay{position:fixed;inset:0;background:rgba(32,27,25,.25);opacity:0;pointer-events:none;transition:.25s;z-index:40}.drawer{position:fixed;top:0;right:-480px;width:min(460px,92vw);height:100vh;background:#fffdf9;box-shadow:-24px 0 60px rgba(35,28,25,.16);z-index:50;transition:.28s;padding:28px;overflow:auto}.drawer.open{right:0}.drawer-overlay.open{opacity:1;pointer-events:auto}.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.close{border:0;background:#f1e9e4;width:36px;height:36px;border-radius:50%;font-size:18px}.client-top{display:flex;gap:16px;align-items:center;margin-bottom:20px}.avatar{width:78px;height:78px;border-radius:50%;overflow:hidden;background:#2d2927;color:#fff;display:grid;place-items:center;font-size:28px;font-weight:800}.avatar img{width:100%;height:100%;object-fit:cover}.client-top h3{margin:0 0 4px;font-size:23px}.client-top p{margin:0;color:var(--muted);font-size:13px}.client-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.data-box{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.data-box b{display:block;font-size:10px;color:var(--rose);letter-spacing:.08em;margin-bottom:5px}.data-box span{font-size:13px;line-height:1.5}.drawer-note{margin-top:14px;padding:13px;background:#fbf3f3;border-radius:12px;color:#5b514d;font-size:13px;line-height:1.6}.drawer-actions{display:grid;gap:8px;margin-top:16px}.drawer-actions button{border:0;border-radius:12px;padding:11px;font-weight:700}.drawer-actions .dark{background:var(--charcoal);color:#fff}.drawer-actions .light{background:#f3ece7;color:var(--ink)}
+    @media(max-width:1000px){.app{grid-template-columns:1fr}aside{display:none}main{padding:24px 18px 50px}.grid.two,.profile,.outputs,.charts{grid-template-columns:1fr}.hero{display:block}.pillrow{margin-top:16px}.music-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><div class="kicker">BEAUTY × AI</div><h1>BEAUTY AI</h1><p>美業智慧工作台</p></div>
+    <nav>
+      <a class="navitem active" href="#home" data-target="home">⌂ 首頁</a>
+      <a class="navitem" href="#new-customer" data-target="new-customer">＋ 新增顧客</a>
+      <a class="navitem" href="#crm" data-target="crm">◌ 顧客資料</a>
+      <a class="navitem" href="#styling" data-target="styling">✦ AI 造型</a>
+      <a class="navitem" href="#content" data-target="content">✎ 內容助手</a>
+      <a class="navitem" href="#crm" data-target="crm">↻ 回訪管理</a>
+      <a class="navitem" href="#insights" data-target="insights">▥ 數據分析</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="home" class="hero section-anchor">
+      <div><div class="eyebrow">AI SALON WORKSPACE</div><h2>讓造型師把時間，<br>留給真正重要的事。</h2><p>從顧客需求、造型靈感，到社群內容、回訪與數據整理，讓 AI 協助完成重複工作。音樂則作為選填的美感靈感，幫助顧客把「我想要那種感覺」轉成設計師能理解的造型語言。</p></div>
+      <div class="pillrow"><span class="pill">AI × Beauty</span><span class="pill">Music × Styling</span><span class="pill">Data × Business</span></div>
+    </section>
+
+    <div id="new-customer" class="grid two section-anchor">
+      <section class="card">
+        <h3>今天的顧客想要什麼？</h3><div class="sub">先記錄需求，再讓 AI 幫你整理成可溝通、可執行的造型方向。</div>
+        <label>服務項目</label><div class="choice-wrap" id="serviceChoices"><button class="choice selected">染髮</button><button class="choice">剪髮</button><button class="choice">燙髮</button><button class="choice">妝容</button><button class="choice">美甲</button><button class="choice">整體造型</button></div>
+        <label>今天的場合</label><div class="choice-wrap" id="occasionChoices"><button class="choice">日常</button><button class="choice">上班</button><button class="choice">約會</button><button class="choice">婚禮</button><button class="choice">派對</button><button class="choice selected">音樂祭</button><button class="choice">演唱會</button><button class="choice">拍攝</button></div>
+        <label>想呈現的感覺</label><div class="choice-wrap" id="moodChoices"><button class="choice selected">自然</button><button class="choice">氣質</button><button class="choice selected">個性</button><button class="choice">性感</button><button class="choice">甜美</button><button class="choice">前衛</button></div>
+        <label>顧客怎麼形容自己的需求？</label><textarea id="brief">下週要去音樂祭，想要有個性一點，但平常上班也可以整理。</textarea>
+      </section>
+      <section class="card">
+        <h3>Music Inspiration <span class="optional">OPTIONAL</span></h3><div class="sub">有沒有一種聲音，很像今天想成為的你？一般日常服務可以直接跳過。</div>
+        <div class="music-grid" id="musicGrid">
+          <button class="music-card selected"><b>Indie Rock / Alternative / Shoegaze</b><span>自然・隨性・個性</span></button>
+          <button class="music-card"><b>Trap / Hip-Hop / R&B</b><span>性感・強勢・夜晚</span></button>
+          <button class="music-card"><b>Techno / House / EDM</b><span>前衛・實驗・未來</span></button>
+          <button class="music-card"><b>K-pop / Dance Pop</b><span>精緻・時尚・舞台感</span></button>
+        </div>
+        <label style="margin-top:18px">其他曲風 / 歌曲</label><input id="songInput" placeholder="例如：Dream Pop / City Pop / Jazz..." />
+        <button class="primary" id="generateBtn">✦ 產生造型提案</button>
+      </section>
+    </div>
+
+    <div id="styling" class="section-title section-anchor"><h3>AI Beauty Translation</h3><p>把抽象的感覺，轉成造型師可以開始討論的語言。</p></div>
+    <section class="card">
+      <div class="profile">
+        <div class="portrait"><img id="lookImage" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85" alt="AI 造型示意照片"></div>
+        <div><div class="eyebrow">BEAUTY PROFILE</div><h3 id="profileTitle">Music Festival × Indie Mood</h3><div class="meta"><span id="metaOccasion">音樂祭</span><span id="metaMusic">Indie Rock / Shoegaze</span><span id="metaMood">自然・個性</span></div>
+          <div class="profile-grid"><div class="mini"><b>HAIR</b><p id="hairText">自然層次／狼尾元素<br>霧感深棕／自然紋理</p></div><div class="mini"><b>MAKEUP</b><p id="makeupText">低彩度眼妝<br>自然肌膚質感</p></div><div class="mini"><b>NAIL</b><p id="nailText">霧面灰棕<br>銀色細節</p></div><div class="mini"><b>COLOR</b><p id="colorText">Charcoal / Dusty Brown / Silver</p></div></div>
+          <div class="note" id="noteText"><b>AI Styling Note</b><br>保留日常可整理性，以層次與質感呈現音樂風格，不需要做過度誇張的舞台造型。</div>
+        </div>
+      </div>
+    </section>
+
+    <div id="content" class="section-title section-anchor"><h3>一次輸入，繼續完成後面的工作</h3><p>把同一筆顧客資料延伸到行銷與 LINE 顧客溝通。</p></div>
+    <section class="outputs">
+      <div class="output-card"><b>01｜IG POST</b><div class="version" id="igVersion">版本 1 / 3｜質感品牌版</div><p id="igText">「有個性，但不是只能活一天。」<br>這次把音樂祭的自由感留在層次與霧感色澤裡，平日上班也能自然整理。私訊預約你的專屬造型提案。</p><div class="spacer"></div><button class="ghost" onclick="nextOutput('ig')">產生 IG 文案</button></div>
+      <div class="output-card"><b>02｜REELS</b><div class="version" id="reelsVersion">版本 1 / 3｜Before → After</div><p id="reelsText">0–3 秒｜Before＋「想去音樂祭，但平常也要能上班」<br>3–8 秒｜剪裁／染髮過程<br>8–12 秒｜造型細節特寫<br>12–15 秒｜After 轉身＋「把喜歡的音樂，變成你的造型」</p><div class="spacer"></div><button class="ghost" onclick="nextOutput('reels')">產生 Reels 腳本</button></div>
+      <div class="output-card"><b>03｜LINE 官方帳號自動回覆</b><div class="version">LINE 官方帳號自動回覆</div><div class="line-box"><div class="line-q" id="lineQ">顧客：染髮大概需要多久？</div><div class="line-a" id="lineA">一般約 2–3 小時，會依髮長、髮況與是否需要特殊處理而不同。可以先傳目前髮況照片，我們會協助初步評估 😊</div></div><div class="spacer"></div><button class="ghost" onclick="nextLineReply()">模擬下一個提問</button></div>
+    </section>
+
+    <div id="crm" class="section-title section-anchor"><h3>顧客管理 Customer CRM</h3><p>系統告訴你哪些客人該回訪，不用靠造型師自己記。</p></div>
+    <section class="card"><div class="customer-list">
+      <div class="customer"><div><b>Amy｜霧感茶棕</b><p>8/11 染髮 ・ IG Content ✓ ・ 9/22 建議護髮 / 補染</p></div><div class="customer-actions"><span class="status">Follow-up 待發送</span><button class="view-btn" onclick="openClient('amy')">查看客戶資料</button></div></div>
+      <div class="customer"><div><b>Kevin｜韓系紋理燙</b><p>首次來店 ・ 本次服務：韓系紋理燙 ・ 來源：LINE 預約</p></div><div class="customer-actions"><span class="status">NEW CUSTOMER</span><button class="view-btn" onclick="openClient('kevin')">查看客戶資料</button></div></div>
+    </div></section>
+
+    <div id="insights" class="section-title section-anchor"><h3>Salon Insights</h3><p>把零散的服務紀錄，整理成可以改善流程的資料。</p></div>
+    <section class="card">
+      <div class="charts">
+        <div class="chart"><h4>熱門服務</h4><div class="barrow"><span>染髮</span><div class="barbg"><div class="barfill" style="width:36%"></div></div><b>36%</b></div><div class="barrow"><span>剪髮</span><div class="barbg"><div class="barfill" style="width:28%"></div></div><b>28%</b></div><div class="barrow"><span>燙髮</span><div class="barbg"><div class="barfill" style="width:21%"></div></div><b>21%</b></div></div>
+        <div class="chart"><h4>熱門需求</h4><div class="barrow"><span>自然好整理</span><div class="barbg"><div class="barfill" style="width:42%"></div></div><b>42%</b></div><div class="barrow"><span>顯白</span><div class="barbg"><div class="barfill" style="width:24%"></div></div><b>24%</b></div><div class="barrow"><span>個性</span><div class="barbg"><div class="barfill" style="width:19%"></div></div><b>19%</b></div></div>
+        <div class="chart"><h4>熱門場合</h4><div class="barrow"><span>日常</span><div class="barbg"><div class="barfill" style="width:55%"></div></div><b>55%</b></div><div class="barrow"><span>約會</span><div class="barbg"><div class="barfill" style="width:16%"></div></div><b>16%</b></div><div class="barrow"><span>活動</span><div class="barbg"><div class="barfill" style="width:13%"></div></div><b>13%</b></div></div>
+      </div>
+      <div class="insight"><b>AI Insight</b><br>本月「自然＋好整理」需求最高，建議增加相關作品與短影音內容，並設計對應的回訪保養方案。</div><div class="demo">Demo Data｜正式合作後可依實際顧客資料、預約系統或 LINE 官方帳號建置。</div>
+    </section>
+    <div class="footer">BEAUTY AI Prototype · Music × Beauty × AI</div>
+  </main>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="clientDrawer">
+  <div class="drawer-head"><div><div class="eyebrow">CUSTOMER PROFILE</div><strong>顧客資料</strong></div><button class="close" onclick="closeDrawer()">×</button></div>
+  <div class="client-top"><div class="avatar" id="clientAvatar"></div><div><h3 id="clientName"></h3><p id="clientSubtitle"></p></div></div>
+  <div class="client-grid" id="clientGrid"></div><div class="drawer-note" id="clientNote"></div>
+  <div class="drawer-actions" id="drawerActions">
+    <button class="dark" id="followupBtn" onclick="generateClientFollowup()">產生 Follow-up</button>
+    <button class="light" id="historyBtn" onclick="toggleHistory()">查看歷史紀錄</button>
+  </div>
+  <div class="drawer-note" id="followupResult" style="display:none"></div>
+  <div id="historyPanel" style="display:none;margin-top:14px"></div>
+</aside>
+
+<script>
+  function singleSelect(id){const box=document.getElementById(id);box.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>{box.querySelectorAll('.choice').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}))}
+  singleSelect('serviceChoices');singleSelect('occasionChoices');
+  document.querySelectorAll('#moodChoices .choice').forEach(btn=>btn.addEventListener('click',()=>btn.classList.toggle('selected')));
+  document.querySelectorAll('.music-card').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.music-card').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}));
+
+  const looks={
+    indie:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85',
+    hiphop:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=85',
+    techno:'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=700&q=85',
+    kpop:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=85'
+  };
+
+  document.getElementById('generateBtn').addEventListener('click',()=>{
+    const occasion=document.querySelector('#occasionChoices .selected')?.textContent.trim()||'日常';
+    const moods=[...document.querySelectorAll('#moodChoices .selected')].map(x=>x.textContent.trim());
+    const selectedMusic=document.querySelector('.music-card.selected b')?.textContent.trim();
+    const customSong=document.getElementById('songInput').value.trim();
+    const music=customSong||selectedMusic||'Personal Style';
+    profileTitle.textContent=`${occasion} × ${music.split('/')[0].trim()} Mood`;metaOccasion.textContent=occasion;metaMusic.textContent=music;metaMood.textContent=moods.length?moods.join('・'):'自然';
+    if(music.includes('Trap')||music.includes('Hip-Hop')){hairText.innerHTML='長直髮／大波浪<br>高對比深色系';makeupText.innerHTML='強眼妝／Glossy Lips<br>夜晚光澤肌';nailText.innerHTML='長甲／Chrome<br>金屬細節';colorText.textContent='Black / Chrome / Wine';noteText.innerHTML='<b>AI Styling Note</b><br>以輪廓、眼妝與金屬元素建立氣場，髮型仍保留日常可整理性。';lookImage.src=looks.hiphop}
+    else if(music.includes('Techno')||music.includes('EDM')||music.includes('House')){hairText.innerHTML='編髮／濕髮感<br>俐落線條';makeupText.innerHTML='亮片／金屬光<br>高對比局部妝';nailText.innerHTML='Chrome／Holographic<br>未來感';colorText.textContent='Silver / Electric Blue / Black';noteText.innerHTML='<b>AI Styling Note</b><br>以少量未來感材質做亮點，避免過度舞台化，讓造型保有可穿性。';lookImage.src=looks.techno}
+    else if(music.includes('K-pop')||music.includes('Dance Pop')){hairText.innerHTML='高完成度層次<br>柔亮髮絲';makeupText.innerHTML='水光肌／精緻眼妝<br>乾淨輪廓';nailText.innerHTML='透明光澤／細節飾品';colorText.textContent='Pearl / Rose / Soft Brown';noteText.innerHTML='<b>AI Styling Note</b><br>以乾淨、精緻與鏡頭感為重點，適合活動、拍攝與舞台場合。';lookImage.src=looks.kpop}
+    else{hairText.innerHTML='自然層次／狼尾元素<br>霧感深棕／自然紋理';makeupText.innerHTML='低彩度眼妝<br>自然肌膚質感';nailText.innerHTML='霧面灰棕<br>銀色細節';colorText.textContent='Charcoal / Dusty Brown / Silver';noteText.innerHTML='<b>AI Styling Note</b><br>保留日常可整理性，以層次與質感呈現音樂風格，不需要做過度誇張的舞台造型。';lookImage.src=looks.indie}
+    document.querySelector('#styling').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  const variants={
+    ig:[
+      ['版本 1 / 3｜質感品牌版','「有個性，但不是只能活一天。」\n這次把音樂祭的自由感留在層次與霧感色澤裡，平日上班也能自然整理。私訊預約你的專屬造型提案。'],
+      ['版本 2 / 3｜生活口吻版','下週要去音樂祭，但又怕做完星期一不能上班？\n這次保留自然好整理的層次，再加一點霧感與個性細節，活動結束後一樣可以輕鬆駕馭。'],
+      ['版本 3 / 3｜行動 CTA 版','音樂祭造型不一定要很誇張。\n從你喜歡的音樂、場合到日常習慣，我們一起找到最適合你的造型。\n📩 私訊預約／諮詢。']
+    ],
+    reels:[
+      ['版本 1 / 3｜Before → After','0–3 秒｜Before＋「想去音樂祭，但平常也要能上班」\n3–8 秒｜剪裁／染髮過程\n8–12 秒｜造型細節特寫\n12–15 秒｜After 轉身＋「把喜歡的音樂，變成你的造型」'],
+      ['版本 2 / 3｜顧客故事','0–4 秒｜「她給我的需求只有一句話……」\n4–7 秒｜「有個性，但不要太誇張」\n7–12 秒｜造型過程＋細節\n12–15 秒｜完成造型＋Beauty Profile'],
+      ['版本 3 / 3｜Music Styling','0–3 秒｜Indie Rock 🎧\n3–6 秒｜Natural × Free × Individual\n6–11 秒｜Hair / Color / Styling 快剪\n11–15 秒｜完成造型＋「What does your beauty sound like?」']
+    ]
+  };
+  const indexes={ig:0,reels:0};
+  function nextOutput(type){indexes[type]=(indexes[type]+1)%3;const [label,text]=variants[type][indexes[type]];document.getElementById(type+'Version').textContent=label;document.getElementById(type+'Text').innerHTML=text.replace(/\n/g,'<br>')}
+
+  const lineReplies=[
+    ['顧客：染髮大概需要多久？','一般約 2–3 小時，會依髮長、髮況與是否需要特殊處理而不同。可以先傳目前髮況照片，我們會協助初步評估 😊'],
+    ['顧客：第一次來可以先諮詢嗎？','可以，建議先傳目前髮況與想要的參考照片，我們會先協助初步判斷，再安排合適的服務時間。'],
+    ['顧客：染完之後多久可以洗頭？','一般建議至少 24–48 小時後再洗髮，實際仍會依染劑與髮況調整，服務完成後設計師也會提供個別保養建議。']
+  ];
+  let lineIndex=0; function nextLineReply(){lineIndex=(lineIndex+1)%lineReplies.length;lineQ.textContent=lineReplies[lineIndex][0];lineA.textContent=lineReplies[lineIndex][1]}
+
+  const clients={
+    amy:{name:'Amy',subtitle:'霧感茶棕｜熟客・回訪待發送',avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=85',data:[['上次服務','8/11 染髮'],['造型','霧感茶棕'],['風格偏好','自然、氣質'],['日常需求','好整理、上班可接受'],['內容紀錄','IG Content ✓'],['建議回訪','9/22 護髮／補染'],['回訪狀態','待發送'],['偏好色系','冷色系']],note:'備註：不希望太高調，偏好冷色系與自然整理感。',history:[['2026/08/11｜染髮','霧感茶棕・自然／氣質','希望顯白、上班不要太高調。'],['2026/06/20｜護髮','深層護髮','髮尾偏乾。'],['2026/04/15｜染髮＋剪髮','冷棕色・中長層次','喜歡冷色系、希望好整理。']]},
+    kevin:{name:'Kevin',subtitle:'NEW CUSTOMER｜首次來店',avatar:null,data:[['本次服務','韓系紋理燙'],['顧客類型','首次來店'],['風格偏好','自然、清爽'],['日常需求','蓬鬆、好整理'],['預約來源','LINE 預約'],['歷史服務','尚無紀錄']],note:'備註：第一次來店，希望每天整理時間短，避免過度蓬鬆。',history:[]}
+  };
+  let activeClientId=null;
+  function openClient(id){
+    activeClientId=id;const c=clients[id];
+    clientName.textContent=c.name;clientSubtitle.textContent=c.subtitle;
+    clientAvatar.innerHTML=c.avatar?`<img src="${c.avatar}" alt="${c.name} 頭像">`:'K';
+    clientGrid.innerHTML=c.data.map(([k,v])=>`<div class="data-box"><b>${k}</b><span>${v}</span></div>`).join('');
+    clientNote.textContent=c.note;
+    historyBtn.style.display=c.history.length?'block':'none';
+    followupResult.style.display='none';historyPanel.style.display='none';
+    clientDrawer.classList.add('open');drawerOverlay.classList.add('open');
+  }
+  function generateClientFollowup(){
+    const c=clients[activeClientId]; if(!c)return;
+    const msg=activeClientId==='amy'
+      ? '嗨 Amy～想關心一下最近染完的髮色和整理狀況 😊 如果霧感開始變淡，最近可以安排護髮或補色；如果近期有活動，也可以一起調整下一次造型。'
+      : '嗨 Kevin～謝謝你第一次來店！想關心一下紋理燙回家後整理得還順手嗎？如果有任何不清楚的整理方式，都可以直接回覆 LINE 詢問我們。';
+    followupResult.innerHTML='<b>AI Follow-up</b><br>'+msg; followupResult.style.display='block';
+  }
+  function toggleHistory(){
+    const c=clients[activeClientId]; if(!c||!c.history.length)return;
+    historyPanel.innerHTML='<div class="eyebrow" style="margin-bottom:10px">SERVICE HISTORY</div>'+c.history.map(([date,service,note])=>`<div class="data-box" style="margin-bottom:9px"><b>${date}</b><span>${service}</span><div style="margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5">${note}</div></div>`).join('');
+    historyPanel.style.display=historyPanel.style.display==='none'?'block':'none';
+  }
+  function closeDrawer(){clientDrawer.classList.remove('open');drawerOverlay.classList.remove('open')}
+
+  const navLinks=[...document.querySelectorAll('.navitem')];
+  navLinks.forEach(a=>a.addEventListener('click',()=>{navLinks.forEach(x=>x.classList.remove('active'));a.classList.add('active')}));
+  const observed=['home','new-customer','styling','content','crm','insights'];
+  const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;navLinks.forEach(x=>x.classList.toggle('active',x.dataset.target===visible.target.id))},{rootMargin:'-20% 0px -65% 0px',threshold:[0,.2,.5]});
+  observed.forEach(id=>observer.observe(document.getElementById(id)));
+</script>
+</body>
+</html>
